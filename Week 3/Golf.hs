@@ -1,4 +1,4 @@
-module Homework3 where
+module Golf where
 
 import Data.List
 

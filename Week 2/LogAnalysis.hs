@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module Homework2 where
+module LogAnalysis where
 
 import Log
 import Text.Read

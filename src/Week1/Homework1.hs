@@ -1,4 +1,4 @@
-module Homework1 where
+module Week1.Homework1 where
 
 -- 1
 toDigits :: Integer -> [Integer]
@@ -9,21 +9,22 @@ toDigits num =
   helper n l =
    if n < 1
    then l
-   else helper (div n 10) ((mod n 10):l)
+   else helper a $ b:l
+    where
+      (a,b) = divMod n 10
 
 toDigitsRev :: Integer -> [Integer]
-toDigitsRev num  =
-  reverse (toDigits num)
+toDigitsRev = reverse . toDigits
 
 -- 2
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther list =
     map altDouble isEven
    where
+    len = length list
+
     isEven :: [(Integer, Int)]
-    isEven =
-     let len = length list
-     in zip list (reverse [1 .. len])
+    isEven = zip list [len, len-1 .. 1]
 
     altDouble :: (Integer, Int) -> Integer
     altDouble (n, i) =
@@ -33,12 +34,11 @@ doubleEveryOther list =
 
 -- 3
 sumDigits :: [Integer] -> Integer
-sumDigits list = foldr (+) 0 $ concat $ map toDigits list
+sumDigits = sum . (concatMap toDigits)
 
 -- 4
 validate :: Integer -> Bool
-validate num =
- (0 ==) $ (\n -> mod n 10) $ sumDigits $ doubleEveryOther $ toDigits num
+validate = (0 ==) . (flip mod 10) . sumDigits . doubleEveryOther . toDigits
 
 -- 5
 type Peg = String

@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module LogAnalysis where
+module Week2.LogAnalysis where
 
 import Text.Read
 import Week2.Log
@@ -8,41 +8,33 @@ import Week2.Log
 
 parseError :: String -> LogMessage
 parseError string =
-        readError $ words string
+    case words string of
+        "I":n:xs -> maybe (Unknown string) (makeLog Info xs) (readMaybe n :: Maybe Int)
+        "W":n:xs -> maybe (Unknown string) (makeLog Warning xs) (readMaybe n :: Maybe Int)
+        "E":m:n:xs -> maybe (Unknown string) helper (readMaybe m::Maybe Int)
+            where
+                helper nn = maybe (Unknown string) (makeLog (Error nn) xs) (readMaybe n:: Maybe Int)
+        _ -> Unknown string
     where
-
-        helper :: MessageType -> [String] -> LogMessage
-        helper err (t:rest) =
-            case (readMaybe t :: Maybe Int) of
-                Nothing  -> Unknown string
-                Just int -> LogMessage err int $ unwords rest
-        helper _ _ = Unknown string
-
-        readError :: [String] -> LogMessage
-        readError ("I":xs) = helper Info xs
-        readError ("W":xs) = helper Warning xs
-        readError ("E":n:xs) =
-            case (readMaybe n :: Maybe Int) of
-                Nothing  -> Unknown string
-                Just int -> helper (Error int) xs
-        readError _ = Unknown string
+        makeLog x xs t = LogMessage x t $ unwords xs
 
 parse :: String -> [LogMessage]
-parse log = map parseError (lines log)
+parse = map parseError . lines
 
 ---------- ex 2 ----------
 
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) tree = tree
 insert log Leaf = Node Leaf log Leaf
-insert log@(LogMessage _ time _) (Node left m@(LogMessage _ treeTime _ ) right)
-    | time < treeTime = Node (insert log left) m right
-    | time >= treeTime = Node left m (insert log right)
+insert log@(LogMessage _ time _) (Node left m@(LogMessage _ treeTime _ ) right) =
+    case compare time treeTime of
+        LT -> Node (insert log left) m right
+        _  -> Node left m (insert log right)
 
 ---------- ex 3 ----------
 
 build :: [LogMessage] -> MessageTree
-build list = foldr (insert) Leaf list
+build list = foldr insert Leaf list
 
 ---------- ex 4 ----------
 
@@ -59,5 +51,3 @@ whatWentWrong messages =
         sortedMessages =  (dropWhile isBelow50) $ inOrder $ build messages
         isBelow50 (LogMessage _ number _) = number < 50
         getText (LogMessage _ _ text) = text
-
-

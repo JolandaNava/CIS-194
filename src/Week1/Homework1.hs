@@ -2,14 +2,14 @@ module Week1.Homework1 where
 
 -- 1
 toDigits :: Integer -> [Integer]
-toDigits num =
-  helper num []
+toDigits =
+  helper []
  where
-  helper :: Integer -> [Integer] -> [Integer]
-  helper n l =
+  helper :: [Integer] -> Integer -> [Integer]
+  helper l n =
    if n < 1
    then l
-   else helper a $ b:l
+   else helper (b:l) a
     where
       (a,b) = divMod n 10
 
@@ -34,11 +34,11 @@ doubleEveryOther list =
 
 -- 3
 sumDigits :: [Integer] -> Integer
-sumDigits = sum . (concatMap toDigits)
+sumDigits = sum . concatMap toDigits
 
 -- 4
 validate :: Integer -> Bool
-validate = (0 ==) . (flip mod 10) . sumDigits . doubleEveryOther . toDigits
+validate = (0 ==) . (`mod` 10) . sumDigits . doubleEveryOther . toDigits
 
 -- 5
 type Peg = String

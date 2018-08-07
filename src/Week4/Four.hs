@@ -1,11 +1,12 @@
 module Week4.Four where
 
 import Data.Bits as Bits
+import Data.List
 
 ---------- ex 1 ----------
 
 fun1' :: [Integer] -> Integer
-fun1' = foldl (*) 1 . map (flip (-) 2) . filter (even)
+fun1' = product . map (subtract 2) . filter even
 
 fun2' :: Integer -> Integer
 fun2' = sum . filter even . takeWhile (>1) . iterate (\n -> if (even n) then (div n 2) else (3 * n + 1))
@@ -33,3 +34,13 @@ map' f = foldr (\a -> (++) [f a] ) []
 
 ---------- ex 4 ----------
 
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = map ((+1) . (*2)) $ ([1 .. n] \\ ) $ makeList $ enumFromTo 1 n
+    where
+        ls = [1 .. n]
+
+makePairs :: Ord a => [a] -> [(a,a)]
+makePairs ls = [(i,j) | i <- ls, j <- ls, i <= j]
+
+makeList  :: [Integer] -> [Integer]
+makeList ls = [ x | i <- ls, j <- ls, i <= j, x <- [i+j+2*i*j] ]

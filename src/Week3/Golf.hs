@@ -1,5 +1,7 @@
-module Golf where
+module Week3.Golf where
 
+import Data.Bool
+import Data.Function
 import Data.List
 
 ---------- ex 1 ----------
@@ -16,10 +18,10 @@ skips l =  map (pickNth l) [1..(length l)]
 ---------- ex 2 ----------
 
 localMaxima :: [Integer] -> [Integer]
-localMaxima (x:y:z:xs) =
+localMaxima (x:xs@(y:z:_)) =
  if x<y && z<y
- then y:(localMaxima (y:z:xs))
- else (localMaxima (y:z:xs))
+ then y:(localMaxima xs)
+ else (localMaxima xs)
 localMaxima _ = []
 
 ---------- ex 3 ----------
@@ -27,22 +29,15 @@ localMaxima _ = []
 histogram :: [Integer] -> String
 histogram l = hist l ++ "==========\n0123456789\n\n"
     where
-        hist l@(x:xs)  = (hist $ foldl (flip id) l $ map delete [0..9]) ++ ((?) '*' ' ' <$> map (flip elem l) [0..9]) ++ "\n"
+        hist l@(x:xs)  = (hist $ foldl (&) l $ map delete [0..9]) ++ (bool ' ' '*' <$> map (`elem` l) [0..9]) ++ "\n"
         hist [] = ""
 
-
-
-
----------- choice helper ----------
-(?) :: a -> a -> Bool -> a
-(?) t f b = if b then t else f
-
----------- breakdown of histogram ----------
+    ---------- breakdown of histogram ----------
 isThere :: [Integer] -> [Bool]
-isThere l =  map (flip elem l) [0..9]
+isThere l =  map (`elem` l) [0..9]
 
 toString :: [Bool] -> String
-toString lb = (?) '*' ' ' <$> lb
+toString lb = bool ' ' '*' <$> lb
 
 nextRow :: [Integer] -> [Integer]
 nextRow l = foldl (flip id) l $ listOfFunctions

@@ -12,10 +12,11 @@ fun2' :: Integer -> Integer
 fun2' = sum . filter even . takeWhile (>1) . iterate (\n -> if (even n) then (div n 2) else (3 * n + 1))
 
 ---------- ex 2 ----------
-
+-- WIP
 data Tree a = Leaf
             | Node Integer (Tree a) a (Tree a)
      deriving (Show, Eq)
+
 
 ---------- ex 3.1 ----------
 
@@ -28,19 +29,15 @@ map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\a -> (++) [f a] ) []
 
 ---------- ex 3.3 ----------
-
+-- WIP
 -- myFoldl :: (a -> b -> a) -> a -> [b] -> a
 -- myFoldl f base xs = foldr ...
 
 ---------- ex 4 ----------
 
 sieveSundaram :: Integer -> [Integer]
-sieveSundaram n = map ((+1) . (*2)) $ ([1 .. n] \\ ) $ makeList $ enumFromTo 1 n
-    where
-        ls = [1 .. n]
+sieveSundaram = map ((+1) . (*2)) . makeList
 
-makePairs :: Ord a => [a] -> [(a,a)]
-makePairs ls = [(i,j) | i <- ls, j <- ls, i <= j]
-
-makeList  :: [Integer] -> [Integer]
-makeList ls = [ x | i <- ls, j <- ls, i <= j, x <- [i+j+2*i*j] ]
+makeList  :: Integer -> [Integer]
+makeList n = ls \\ [ x | i <- ls, j <- ls, i <= j, x <- [i+j+2*i*j], n > x]
+    where ls = [1 .. n]

@@ -1,6 +1,5 @@
 module Week4.Four where
 
-import Data.Bits as Bits
 import Data.List
 
 ---------- ex 1 ----------
@@ -40,31 +39,31 @@ foldTree = foldr insertBalanced Leaf
         instertLeft :: a -> Tree a -> Tree a
         instertLeft e t@(Node h l x r) =
             let addedLeft = insertBalanced e l
-                newHeight = (+1) $ max (height r) (height addedLeft)
+                newHeight = 1 + max (height r) (height addedLeft)
             in Node newHeight addedLeft x r
 
         insertRight :: a -> Tree a -> Tree a
         insertRight e t@(Node h l x r) =
             let addedRight = insertBalanced e r
-                newHeight = (+1) $ max (height l) (height addedRight)
+                newHeight = 1 + max (height l) (height addedRight)
             in Node newHeight l x addedRight
 
 
 ---------- ex 3.1 ----------
 
 xor' :: [Bool] -> Bool
-xor' = foldr Bits.xor False
+xor' = foldr (/=) False
 
 ---------- ex 3.2 ----------
 
 map' :: (a -> b) -> [a] -> [b]
-map' f = foldr (\a -> (++) [f a] ) []
+map' f = foldr (\a -> (:) (f a)) []
 
 ---------- ex 3.3 ----------
 -- with help from https://wiki.haskell.org/Foldl_as_foldr
 -- and http://blog.shaynefletcher.org/2015/02/fold-left-via-fold-right.html
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
-myFoldl f base xs = foldr (\a b x -> b $ f x a) id xs base
+myFoldl f base xs = foldr (\a g x -> g $ f x a) id xs base
 
 ---------- ex 4 ----------
 

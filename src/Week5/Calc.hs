@@ -58,15 +58,6 @@ instance Expr Mod7 where
     add (Mod7 x) (Mod7 y) = lit $ x + y
     mul (Mod7 x) (Mod7 y) = lit $ x * y
 
--- For types like MinMax and Mod7 I think I should be able
--- to use something similar to "lift" to avoid patternmatching
--- I think liftA2 has the right type signature
--- liftA2 :: (a -> b -> c) -> f a -> f b -> f c
--- but MinMax is not recognised as a functor (I think?)
--- Ideally I'd want to write something like this:
---     add x y = liftA2 (max) x y
--- how do I do this?
-
 ---------- ex 5 ----------
 instance Expr VM.Program where
     lit x = [VM.PushI x]
@@ -75,7 +66,3 @@ instance Expr VM.Program where
 
 compile :: String -> Maybe VM.Program
 compile = parseExp lit add mul
-
--- this excercise seems a bit strange since I do not have to implement Or, And, and pushing Bools
--- I also had to enable  FlexibleInstances to not have an error on creating the instance
-

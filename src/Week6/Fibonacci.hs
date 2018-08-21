@@ -30,7 +30,7 @@ instance Show a => Show (Stream a) where
 
 ---------- ex 4 ----------
 streamRepeat :: a -> Stream a
-streamRepeat x = Stream x (streamRepeat x)
+streamRepeat x = let stream = Stream x stream in stream
 
 streamMap :: (a -> b) -> Stream a -> Stream b
 streamMap f (Stream a sa) = Stream (f a) (streamMap f sa)
@@ -87,6 +87,5 @@ f :: Matrix
 f = ((1,1),(1,0))
 
 fib4 :: Integer -> Integer
--- fib4 0 = 0
--- I can't specify the 0th case if I want to eta reduce fib4
-fib4 = snd . fst . (^) f
+fib4 0 = 0
+fib4 x = snd $ fst $ f^x

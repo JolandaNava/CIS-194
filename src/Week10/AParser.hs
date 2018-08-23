@@ -52,13 +52,13 @@ abParser :: Parser (Char,Char)
 abParser = (,) <$> char 'a' <*> char 'b'
 
 abParser_ :: Parser ()
-abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
+abParser_ = void abParser
 
 intPair :: Parser [Integer]
 intPair = toList <$> intSpace <*> posInt
   where
     intSpace :: Parser Integer
-    intSpace = (\x _ -> x) <$> posInt <*> char ' '
+    intSpace = posInt <* char ' '
 
     toList = \x y -> [x,y]
 
@@ -70,6 +70,4 @@ instance Alternative Parser where
 
 ---------- ex 5 ----------
 intOrUppercase :: Parser ()
-intOrUppercase = toUnit <$> satisfy isUpper <|> toUnit <$> posInt
-      where
-        toUnit = const ()
+intOrUppercase = void (satisfy isUpper) <|> void posInt

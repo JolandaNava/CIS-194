@@ -3,6 +3,7 @@
 module Week7.JoinList where
 
 import Data.Monoid
+import Data.Semigroup
 import Week7.Buffer
 import Week7.Editor
 import Week7.Scrabble
@@ -22,7 +23,7 @@ tag (Append m _ _) = m
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
 (+++) Empty jl = jl
 (+++) jl Empty = jl
-(+++) jl1 jl2  = Append (tag jl1 <> tag jl2) jl1 jl2
+(+++) jl1 jl2  = Append (mappend (tag jl1) (tag jl2)) jl1 jl2
 
 ---------- ex 0 ----------
 instance Monoid m => Semigroup (JoinList m a) where

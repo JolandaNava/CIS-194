@@ -37,14 +37,11 @@ maxFun tree = moreFun x y
 
 ---------- ex 5 ----------
 main :: IO ()
-main =
-    readFile "src/Week8/company.txt" >>=
-        (\s ->
-            let gl = getGuestList s
-            in putStrLn (fun gl) >>
-               putStrLn "Invited guests:" >>
-               mapM_ putStrLn (guests gl)
-        )
+main = readFile "src/Week8/company.txt" >>= \s ->
+        let gl = getGuestList s
+        in putStrLn (fun gl) >>
+            putStrLn "Invited guests:" >>
+            mapM_ putStrLn (guests gl)
 
 getGuestList :: String -> GuestList
 getGuestList = maxFun . read

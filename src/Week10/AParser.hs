@@ -1,6 +1,7 @@
 module Week10.AParser where
 
 import Control.Applicative
+import Control.Monad
 import Data.Char
 
 ------------------------------------------------------------
@@ -40,18 +41,11 @@ instance Functor Parser where
 
 ---------- ex 2 ----------
 instance Applicative Parser where
-  pure a = Parser $ \_ -> Just (a, "")
+  pure a = Parser $ const $ Just (a, "")
 
-  p1 <*> p2 = Parser f
+  (Parser f1) <*> (Parser f2) = Parser $ f
     where
-      f1 = runParser p1
-      f2 = runParser p2
-      f str =
-        case f1 str of
-          Nothing      -> Nothing
-          Just (g, xs) -> case f2 xs of
-                            Nothing      -> Nothing
-                            Just (a, ys) -> Just (g a, ys)
+      f str = join $ (\(g,xs) -> (first g) <$> f2 xs) <$> f1 str
 
 ---------- ex 3 ----------
 abParser :: Parser (Char,Char)
@@ -70,15 +64,12 @@ intPair = toList <$> intSpace <*> posInt
 
 ---------- ex 4 ----------
 instance Alternative Parser where
-  empty = Parser $ \_ -> Nothing
+  empty = Parser $ const Nothing
 
-  (<|>) p1 p2 = Parser $ \s -> f1 s <|> f2 s
-    where
-      f1 = runParser p1
-      f2 = runParser p2
+  (<|>) (Parser f1) (Parser f2) = Parser $ \s -> f1 s <|> f2 s
 
 ---------- ex 5 ----------
 intOrUppercase :: Parser ()
 intOrUppercase = toUnit <$> satisfy isUpper <|> toUnit <$> posInt
       where
-        toUnit = \_ -> ()
+        toUnit = const ()

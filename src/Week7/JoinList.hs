@@ -24,6 +24,18 @@ tag (Append m _ _) = m
 (+++) jl Empty = jl
 (+++) jl1 jl2  = Append (tag jl1 <> tag jl2) jl1 jl2
 
+---------- ex 0 ----------
+instance Monoid m => Semigroup (JoinList m a) where
+    (<>) = (+++)
+-- does this qualify as associative?
+-- (a <> b) + c = a <> (b <> c)
+-- only if we consider this to be true
+-- Append m (Append n a b) c = Append m a (Append p b c)
+-- which they are if we understand them as list waiting to be appended
+
+instance Monoid m => Monoid (JoinList m a) where
+    mempty = Empty
+
 ---------- ex 2.1 ----------
 indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
 indexJ i Empty = Nothing

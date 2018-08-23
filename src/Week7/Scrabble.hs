@@ -5,7 +5,7 @@ module Week7.Scrabble where
 import Data.Monoid
 
 ---------- ex 3 ----------
-newtype Score = Score Int
+newtype Score = Score { getScore :: Int }
     deriving (Eq, Ord, Show, Num)
 
 score :: Char -> Score
@@ -39,9 +39,6 @@ score _   = Score 0
 
 scoreString :: String -> Score
 scoreString = sum . map score
-
-getScore :: Score -> Int
-getScore (Score i) = i
 
 instance Monoid Score where
     mempty = Score 0

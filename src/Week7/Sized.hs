@@ -1,13 +1,11 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances          #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Week7.Sized where
 
 import Data.Monoid
 
-newtype Size = Size Int
+newtype Size = Size { getSize :: Int }
   deriving (Eq, Ord, Show, Num)
-
-getSize :: Size -> Int
-getSize (Size i) = i
 
 class Sized a where
   size :: a -> Size

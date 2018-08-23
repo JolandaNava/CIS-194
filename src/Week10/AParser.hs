@@ -40,7 +40,7 @@ instance Functor Parser where
 
 ---------- ex 2 ----------
 instance Applicative Parser where
-  pure a = Parser $ \_ -> Just (a, "") -- ???
+  pure a = Parser $ \_ -> Just (a, "")
 
   p1 <*> p2 = Parser f
     where
@@ -55,4 +55,30 @@ instance Applicative Parser where
 
 ---------- ex 3 ----------
 abParser :: Parser (Char,Char)
-abParser = (,) <$> (char 'a') <*> (char 'b')
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
+
+intPair :: Parser [Integer]
+intPair = toList <$> intSpace <*> posInt
+  where
+    intSpace :: Parser Integer
+    intSpace = (\x _ -> x) <$> posInt <*> char ' '
+
+    toList = \x y -> [x,y]
+
+---------- ex 4 ----------
+instance Alternative Parser where
+  empty = Parser $ \_ -> Nothing
+
+  (<|>) p1 p2 = Parser $ \s -> f1 s <|> f2 s
+    where
+      f1 = runParser p1
+      f2 = runParser p2
+
+---------- ex 5 ----------
+intOrUppercase :: Parser ()
+intOrUppercase = toUnit <$> satisfy isUpper <|> toUnit <$> posInt
+      where
+        toUnit = \_ -> ()

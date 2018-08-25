@@ -44,11 +44,14 @@ parseSExpr = atomExpr <|> combExpr
 combExpr :: Parser SExpr
 combExpr = Comb <$> (open *> oneOrMore parseSExpr) <* close
   where
-    open = char '(' *> spaces
-    close = char ')' <* spaces
+    open = removeSpaces $ char '('
+    close = removeSpaces $ char ')'
 
 atomExpr :: Parser SExpr
-atomExpr = A <$> (atomIdent <|> atomInt) <* spaces
+atomExpr = removeSpaces $ A <$> (atomIdent <|> atomInt)
   where
     atomIdent =  I <$> ident
     atomInt = N <$> posInt
+
+removeSpaces :: Parser a -> Parser a
+removeSpaces p = spaces *> p <* spaces

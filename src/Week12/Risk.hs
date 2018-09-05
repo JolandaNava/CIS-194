@@ -99,8 +99,14 @@ rollTwoDie =
 
 rollOneDice :: Rand StdGen [DieValue]
 rollOneDice =
-  die >>= \x -> 
-  return [x]
+  pure <$> die
+
+-- implementing rollNDie equivalent
+-- using replicateM
+-- replicateM :: Applicative m => Int -> m a -> m [a]
+
+rollNDie' :: Int -> Rand StdGen [DieValue]
+rollNDie' = flip replicateM die
 
 ------------------------- ex 3 ----------------------------- 
 invade :: Battlefield -> Rand StdGen Battlefield
